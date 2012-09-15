@@ -27,7 +27,8 @@ def setup
 		@file.close
 	end
 	it "test_answer" do
-		assert_equal 7273, maxPatchInTree('triangle.txt')
+		 7273.must_equal maxPatchInTree('triangle.txt')
+		#assert_equal 7273, maxPatchInTree('triangle.txt')
 	end
 
 	it "test_readTrinagle_normal_data" do

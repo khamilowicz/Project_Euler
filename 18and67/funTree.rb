@@ -1,10 +1,6 @@
-class EmptyTriangle < StandardError
-end
-class MalformedTriangle < StandardError
-end
-
 class Branch < Array
 				attr_accessor :line_number
+
 				def initialize line_number
 								@line_number = line_number
 				end
@@ -17,27 +13,46 @@ class Tree
 				end
 
 				def getBranch line_number
+
 								branch = @branches[line_number]
+
 								if branch.nil?
+
 												max_line_number = @branches.collect(&:line_number).max
 												branch = Branch.new max_line_number+2
 												max_line_number.times { branch << [Leaf.new(nil),Leaf.new(nil)]}
 								end
+
 								branch
 				end
+
+				def countMax 
+								curr_leaf = @branches.first.first
+								curr_leaf.countMaxRe 
+				end
+
 				def << branch
 								begin
 												raise unless branch.kind_of?(Branch) && branch.all?{ |l| l.kind_of?(Leaf)}
 												@branches << branch
 								rescue
-												@branches << [Leaf.new(0)]
+												@branches << [Leaf.new(0)] # This needs more comprehensive handling, for more bizzare trees 
 								end
 				end
 
-
-
 				def method_missing name, *args, &block
 								@branches.send name, *args, &block
+				end
+
+				def sortTree 
+
+								@branches.reverse.map! do |branch|
+												branch.map! do |leaf|
+																leaf.sortLeaves
+																leaf
+												end
+												branch
+								end.reverse
 				end
 
 end
@@ -49,7 +64,7 @@ class Leaf
 				end
 				def sortLeaves
 								return if @leftleaf.nil? && @rightleaf.nil?
-								if countMaxRe(@leftleaf) < countMaxRe(@rightleaf)
+								if @leftleaf.countMaxRe < @rightleaf.countMaxRe
 												@leftleaf, @rightleaf = @rightleaf, @leftleaf
 								end
 				end
@@ -57,33 +72,15 @@ class Leaf
 				def show
 								puts "Leaf: Value: #{value}, Parent: #{parent.value unless parent.nil?}, Lf: #{ leftleaf.value unless leftleaf.nil?}, Rl #{rightleaf.value unless rightleaf.nil?}"
 				end
-
-end
-
-def sortTree tree
-				
-				tree.reverse.map! do |branch|
-								branch.map! do |leaf|
-												leaf.sortLeaves
-												leaf
+				def countMaxRe 
+								if @leftleaf.nil?
+												return @value
+								else
+												return @value+@leftleaf.countMaxRe
 								end
-								branch
-				end.reverse
-end
-
-def countMax tree
-				curr_leaf = tree.first.first
-				countMaxRe curr_leaf
-end
-
-def countMaxRe leaf
-				if leaf.leftleaf.nil?
-								return leaf.value
-				else
-								return leaf.value+countMaxRe(leaf.leftleaf)
 				end
-end
 
+end
 
 def moveThroughTree tree
 				curr_leaf = tree.first.first
@@ -194,7 +191,7 @@ def showTree tree
 end
 
 def showLeaf leaf
-								print leaf.value.to_s + " "
+				print leaf.value.to_s + " "
 				unless leaf.leftleaf.nil?
 								showLeaf leaf.leftleaf
 				end
@@ -206,4 +203,7 @@ def showLeaf leaf
 				end
 end
 
-
+class EmptyTriangle < StandardError
+end
+class MalformedTriangle < StandardError
+end

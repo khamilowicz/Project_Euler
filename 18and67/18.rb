@@ -6,8 +6,8 @@ def maxPatchInTree filename
 				triangle = readTriangle File.open( filename, 'rb')
 				tree = prepareTree triangle
 				unless tree.nil?
-				tree = sortTree tree 
-				countMax tree
+				tree.sortTree 
+				 tree.countMax
 				end
 end
 
