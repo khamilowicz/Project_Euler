@@ -3,20 +3,6 @@ require "minitest/spec"
 require "minitest/autorun"
 
 
-class Tree
-				def == tree_2
-
-								self.inspect == tree_2.inspect
-								#@branches.each_with_index do |branch, b_index|
-									#branch.each_with_index do |leaf, l_index|
-										#return false unless leaf == tree_2.getBranch(b_index).fetch(l_index)
-									#end
-								#end
-								#return true
-				end
-
-end
-
 	describe 'Tree' do
 def setup
 		@file = File.open('test_cases.txt', 'rb')

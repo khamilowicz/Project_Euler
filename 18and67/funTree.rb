@@ -17,7 +17,6 @@ class Tree
 								branch = @branches[line_number]
 
 								if branch.nil?
-
 												max_line_number = @branches.collect(&:line_number).max
 												branch = Branch.new max_line_number+2
 												max_line_number.times { branch << [Leaf.new(nil),Leaf.new(nil)]}
@@ -120,12 +119,8 @@ end
 
 #extracts Tree from array of arrays formatted according to readTriangle example. 
 #It creates tree, always with 2 children. The topmost parent and lowest children are nil
-def prepareTree triangle
-				begin
-								raise EmptyTriangle if triangle.empty?
+def convertTraingleToTreeWithoutConnections triangle
 								tree = Tree.new
-
-
 								triangle.each_with_index do |line, index|
 												branch = Branch.new index
 
@@ -137,17 +132,16 @@ def prepareTree triangle
 												end
 												tree << branch
 								end
+								tree
+end
 
-								tree[0..-2].each_with_index do |branch, branch_index|
-												branch_child = tree.getBranch(branch.line_number+1)
-												branch_parent = branch
-
-												#original triangle:
+def convertSimpleBranchIntoBinaryBranch branch, branch_child
+												#original branches:
 												#1
 												#2 3
 												#4 5 6
 												#7 8 9 10
-												#is turned into
+												#are turned into
 												#1
 												#2 3
 												#4 5 5 6
@@ -158,11 +152,14 @@ def prepareTree triangle
 																branch_child = [branch_child.first, middle, branch_child.last].flatten
 												end
 
+												branch_child
+end
+
+def connectChildrenAndParents branch_child, branch_parent
 												#each element in parent branch gets two consecutive leaves from the children branch. 
 												#Because middle leaves are reapeted, neighbouring parents have one common child
-
+												#
 												branch_child.each_slice(2).with_index do |(child_1, child_2), i|
-												begin
 																parent = branch_parent[i]
 
 																child_1.parent = parent
@@ -171,8 +168,21 @@ def prepareTree triangle
 																child_2.parent = parent 
 																parent.rightleaf = child_2 
 												end
+end
+def prepareTree triangle
+				begin
+								raise EmptyTriangle if triangle.empty?
 
-												end
+								tree = convertTraingleToTreeWithoutConnections triangle
+
+								tree[0..-2].each_with_index do |branch, branch_index|
+												branch_child = tree.getBranch(branch.line_number+1)
+												branch_parent = branch
+
+												branch_child = convertSimpleBranchIntoBinaryBranch branch, branch_child
+
+												connectChildrenAndParents branch_child, branch_parent
+
 								end
 
 				rescue EmptyTriangle
