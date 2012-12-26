@@ -29,6 +29,10 @@ class Tree
 								curr_leaf = @branches.first.first
 								curr_leaf.countMaxRe 
 				end
+				def countMin 
+								curr_leaf = @branches.first.first
+								curr_leaf.countMinRe 
+				end
 
 				def << branch
 								begin
@@ -76,6 +80,13 @@ class Leaf
 												return @value
 								else
 												return @value+@leftleaf.countMaxRe
+								end
+				end
+				def countMinRe 
+								if @rightleaf.nil?
+												return @value
+								else
+												return @value+@rightleaf.countMinRe
 								end
 				end
 

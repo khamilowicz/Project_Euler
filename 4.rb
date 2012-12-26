@@ -5,7 +5,7 @@ require 'benchmark'
 
 
 Benchmark.bm { |x|
-	x.report do
+	x.report('without combination') do
 		999.downto(100).each do |x|
 			999.downto(100) do |y|
 				b = x*y
@@ -17,7 +17,7 @@ Benchmark.bm { |x|
 		end
 	end
 
-	x.report do
+	x.report('with combination') do
 		@nums = (100..999).to_a.combination(2).sort.reverse
 		@nums.each do |x|
 			a = x[0] * x[1]
@@ -28,7 +28,7 @@ Benchmark.bm { |x|
 			end
 		end
 	end
-	x.report do
+	x.report('combination with list') do
 		999.downto(100).to_a.combination(2) do |x|
 			a = x[0] * x[1]
 			b = a.to_s
@@ -42,5 +42,5 @@ Benchmark.bm { |x|
 
 puts @list.max
 puts @list2.max
-puts @list.size
-puts @list2.size
+#puts @list.size
+#puts @list2.size

@@ -3,11 +3,11 @@
 require 'benchmark'
 include Benchmark
 
-n = 1
+n = 50
 
 puts Benchmark.bm {  |report|
 
-	t1 = report.report do
+	t1 = report.report("first") do
 		n.times do
 
 			sum = 0
@@ -19,12 +19,11 @@ puts Benchmark.bm {  |report|
 					sum += x
 				end
 			end
-				puts sum
 
 		end
 	end
 
-	t2 = report.report do
+	t2 = report.report("second")do
 		n.times do
 
 			a = 999/5
@@ -37,16 +36,22 @@ puts Benchmark.bm {  |report|
 		end
 	end
 
-	t3 = report.report do
+	t3 = report.report("third") do
 
 		n.times do
 
 			sum =			[*1..999/5].inject(:+)*5 +
-				[*1..999/3].inject(:+)*3 -
-				[*1..999/15].inject(:+)*15
+								[*1..999/3].inject(:+)*3 -
+								[*1..999/15].inject(:+)*15
 
 		end
+
 	end
-	[(t1+t2+t3)/50]
+
+	t4 = report.report("fourth") do
+		n.times do
+						sum = [*1..999].keep_if{|i| i%3 == 0 || i%5 == 0}.inject(:+)
+		end
+	end
 
 }
